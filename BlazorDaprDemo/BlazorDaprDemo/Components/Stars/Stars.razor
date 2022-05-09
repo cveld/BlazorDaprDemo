@@ -1,0 +1,47 @@
+﻿<div class="stars">  
+    @for (var i = 1; i <= 5; i++)
+    {
+        var staractivecssclass = maxAmount() >= i ? "is-active" : "";
+        var idx = i;
+        
+        <svg @onmousemove="() => onMouseMove(idx)" @onmouseout="onMouseLeave" class="start-@idx @staractivecssclass" xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 61 48">
+            <path d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z" />
+        </svg>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int amount { get; set; } = 2;
+    [Parameter]
+    public EventCallback<int> amountChanged { get; set; }
+
+    private int hoverStarIndex = -1;
+
+
+    async Task onChange(int value)
+    {
+        await this.amountChanged.InvokeAsync(value);
+    }
+
+    int maxAmount()
+    {
+        return this.hoverStarIndex != -1 ? this.hoverStarIndex : this.amount;
+    }
+
+    string getStarClasses(int index)
+    {
+        return $"star-${index} ${(index <= this.amount ? "is-active" : "")}";
+    }
+
+    void onMouseLeave(MouseEventArgs e)
+    {
+        this.hoverStarIndex = -1;
+    }
+
+    void onMouseMove(int index)
+    {
+        this.hoverStarIndex = index;
+    }
+}

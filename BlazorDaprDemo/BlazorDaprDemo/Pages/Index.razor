@@ -1,0 +1,56 @@
+﻿@page "/"
+@using System.Text.Json
+@using BlazorDaprDemo.Services
+@using VacationModels
+@inject IVacationAgent vacationAgent
+@inject IConfiguration configuration
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.!!!!!
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<p>
+    Environment: @configuration["DAPRDEMOENVIRONMENT"]
+</p>
+
+<VacationList />
+
+<p>
+<button class="btn btn-primary" @onclick="GetVacationData">Get vacation data</button>
+</p>
+
+@if(error != null)
+{
+    <p style="color:red">@error</p>
+}
+
+@if(vacations != null)
+{
+    <table>
+        <thead><tr><th>Name</th></tr></thead>
+        <tbody>
+            @foreach (var vacation in vacations) {
+                <tr><td>@vacation.Name</td></tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<Vacation>? vacations = null;
+    string error;
+    async Task GetVacationData()
+    {
+        error = String.Empty;
+        try
+        {
+            vacations = await vacationAgent.GetVacationsAsync();
+        } catch (Exception e)
+        {
+            error = e.Message;
+        }
+    }
+}

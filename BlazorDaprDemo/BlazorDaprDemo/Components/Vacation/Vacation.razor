@@ -1,0 +1,84 @@
+﻿@using BlazorServerSide.Models
+@inject IConfiguration configuration
+@inject NavigationManager NavigationManager
+@using Microsoft.Extensions.Configuration
+@using BlazorServerSide.Components.Stars
+@using BlazorServerSide.Components.Rating
+@using BlazorServerSide.Components.BookForm
+@using BlazorServerSide.Components.Like
+@inject IModalService Modal
+
+<div class="vacation">
+    <article class="card">
+        <header>
+            <img src="@ImageUrl" class="card-img-top content">
+            <Like Liked="Liked" OnLikeClicked="OnLikeClicked"></Like>
+        </header>
+
+        <section class="card-body">
+            <header class="card-title mouse-pointer @(vacation.Booked ? "booked" : null)" @onclick="showModal">@vacation.Title @if (vacation.Booked){<b>booked</b>}</header>
+            <Rating value="@vacation.Rating"></Rating>
+            <Stars amount="vacation.Stars"></Stars>
+        </section>
+
+        <footer class="card-footer">
+            <span class="price-unit">@vacation.PriceUnit</span>
+            <span class="wrapper-price">
+                @if (!string.IsNullOrEmpty(vacation.OriginalPrice))
+                {
+                    <span class="price-orig">€ @vacation.OriginalPrice</span>
+                }
+                <span class="price">€ @vacation.Price</span>
+            </span>
+        </footer>
+    </article>
+</div>
+
+@code {
+    [Parameter]
+    public VacationModel vacation { get; set; }
+
+    [Parameter] public EventCallback OnLikeClicked { get; set; }
+    [Parameter] public EventCallback OnBooked { get; set; }
+
+    [Parameter] public bool Liked { get; set; }
+
+    string ImageUrl;
+
+    protected override void OnInitialized()
+    {
+        var section = configuration.GetSection("VacationImagesBaseUrl");
+        var relativeuri = section.Value;
+        var absoluteuri = "";
+        if (relativeuri.StartsWith("~"))
+        {
+            absoluteuri = NavigationManager.BaseUri + relativeuri.Substring(2) + vacation.ImageUrl;
+        }
+        else
+        {
+            absoluteuri = relativeuri;
+        }
+        ImageUrl = absoluteuri;
+    }
+
+    void showModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("vacation", vacation);
+        Modal.OnClose += ModalClosed;
+        Modal.Show<BookForm>("Book vacation", parameters);
+    }
+
+    async void ModalClosed(ModalResult modalResult)
+    {
+        if (modalResult.Cancelled)
+        {
+        }
+        else
+        {            
+            await OnBooked.InvokeAsync(modalResult.Data);
+        }
+
+        Modal.OnClose -= ModalClosed;
+    }
+}

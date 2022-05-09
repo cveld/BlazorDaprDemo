@@ -1,0 +1,10 @@
+﻿/*hacks for integration of Bootstrap with Material Components for the Web https://material-components.github.io/material-components-web-catalog */
+.col-md-6, .col-sm-12 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.mdc-menu-surface {
+    /*Hack for 'bug' in the MatBlazor library for select dropdowns in modals. Without this hack the select dropdown disappears behind the modal */
+    z-index: 200;
+}

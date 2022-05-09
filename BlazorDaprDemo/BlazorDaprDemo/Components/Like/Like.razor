@@ -1,0 +1,15 @@
+﻿<div class="like">
+    <span @onclick="LikeClicked" class="oi oi-heart @(Liked ? "active" : null)" aria-hidden="true"></span>
+</div>
+
+@code {
+    [Parameter]
+    public bool Liked { get; set; }
+
+    [Parameter] public EventCallback OnLikeClicked { get; set; }
+
+    async void LikeClicked()
+    {
+        await OnLikeClicked.InvokeAsync(null);
+    }
+}
