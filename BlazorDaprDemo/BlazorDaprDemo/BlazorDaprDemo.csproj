@@ -9,16 +9,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazored.Modal" Version="6.0.1" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles.css" />
+  </ItemGroup>
+
+  <ItemGroup>    
+    <PackageReference Include="BuildWebCompiler2022" Version="1.14.7" />    
     <PackageReference Include="Dapr.AspNetCore" Version="1.7.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
+    <PackageReference Include="MatBlazor" Version="2.8.0" />    
     <PackageReference Include="Microsoft.Tye.Extensions.Configuration" Version="0.10.0-alpha.21420.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlazorDaprDemo.Entities\BlazorDaprDemo.Entities.csproj" />
+    <ProjectReference Include="..\BlazorDaprDemo.FakeUser\BlazorDaprDemo.FakeUser.csproj" />
     <ProjectReference Include="..\BlazorInfrastructure\BlazorInfrastructure.csproj" />
-    <ProjectReference Include="..\VacationModels\VacationModels.csproj" />
+    <ProjectReference Include="..\FavoritesModels\FavoritesModels.csproj" />
+    <ProjectReference Include="..\OrderModels\OrderModels.csproj" />
   </ItemGroup>
 
 </Project>

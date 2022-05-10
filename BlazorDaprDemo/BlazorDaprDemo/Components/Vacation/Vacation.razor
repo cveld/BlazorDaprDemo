@@ -1,12 +1,20 @@
-﻿@using BlazorServerSide.Models
+﻿@using BlazorDaprDemo.Entities
+@using BlazorDaprDemo.Models
+@using BlazorDaprDemo.Services
+@using BlazorServerSide.Models
 @inject IConfiguration configuration
 @inject NavigationManager NavigationManager
+@using Dapr.Client
 @using Microsoft.Extensions.Configuration
-@using BlazorServerSide.Components.Stars
-@using BlazorServerSide.Components.Rating
-@using BlazorServerSide.Components.BookForm
-@using BlazorServerSide.Components.Like
-@inject IModalService Modal
+@using BlazorDaprDemo.Components.Stars
+@using BlazorDaprDemo.Components.Rating
+@using BlazorDaprDemo.Components.BookForm
+@using BlazorDaprDemo.Components.Like
+@using OrderModels
+@inject IMatDialogService matDialogService
+@inject OrdersEventBroker ordersEventBroker
+@inject DaprClient daprClient
+@implements IDisposable
 
 <div class="vacation">
     <article class="card">
@@ -16,7 +24,19 @@
         </header>
 
         <section class="card-body">
-            <header class="card-title mouse-pointer @(vacation.Booked ? "booked" : null)" @onclick="showModal">@vacation.Title @if (vacation.Booked){<b>booked</b>}</header>
+            <header class="card-title mouse-pointer @(vacation.Booked ? "booked" : null)" @onclick="showModal">
+                @vacation.Title
+                @if (processing) {  
+                    <p>
+                    <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Small" />
+                    <span>processing order...</span>
+                    </p>
+                }
+                @if (!String.IsNullOrWhiteSpace(status))
+                {
+                    <p><b>@status</b></p>
+                }
+            </header>
             <Rating value="@vacation.Rating"></Rating>
             <Stars amount="vacation.Stars"></Stars>
         </section>
@@ -36,14 +56,14 @@
 
 @code {
     [Parameter]
-    public VacationModel vacation { get; set; }
+    public VacationModel vacation { get; set; } = new VacationModel();
 
     [Parameter] public EventCallback OnLikeClicked { get; set; }
     [Parameter] public EventCallback OnBooked { get; set; }
 
     [Parameter] public bool Liked { get; set; }
 
-    string ImageUrl;
+    string ImageUrl = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -61,24 +81,75 @@
         ImageUrl = absoluteuri;
     }
 
-    void showModal()
+    async Task showModal2()
     {
-        var parameters = new ModalParameters();
-        parameters.Add("vacation", vacation);
-        Modal.OnClose += ModalClosed;
-        Modal.Show<BookForm>("Book vacation", parameters);
+        status = "";
+        processing = false;
+        await PlaceOrder(vacation.ID);
+    }
+    async Task showModal()
+    {
+        status = "";
+        var result = await matDialogService.OpenAsync(typeof(BookForm), new MatDialogOptions
+        {
+            Attributes = new Dictionary<string, object>
+            {
+                {"VacationModel", vacation}
+            }
+        }) as DialogResult<BookedEventModel>;     
+        if (result?.Result == ModalResult.Ok)
+        {
+            await PlaceOrder(vacation.ID);
+            await OnBooked.InvokeAsync(result.Data);
+        }
     }
 
-    async void ModalClosed(ModalResult modalResult)
+    bool processing;
+    private CancellationTokenSource? cts;
+    string status = string.Empty;
+
+    async Task PlaceOrder(int vacationid)
     {
-        if (modalResult.Cancelled)
+        if (processing)
         {
-        }
-        else
-        {            
-            await OnBooked.InvokeAsync(modalResult.Data);
+            return;
         }
 
-        Modal.OnClose -= ModalClosed;
+        try
+        {
+            processing = true;
+
+            var orderId = Guid.NewGuid().ToString();
+            cts = new CancellationTokenSource();
+
+            var task = ordersEventBroker.GetOrderConfirmationAsync(orderId, cts.Token);
+
+            await daprClient.PublishEventAsync(OrderApiConsts.DaprPubSub, OrderApiConsts.OrderPlacedTopic, new Order()
+            {
+                VacationId = vacationid,
+                OrderId = orderId,
+            });
+
+            var confirmation = await task;
+            if (confirmation.Confirmed)
+            {
+                status = $"Booked!";
+            }
+            else
+            {
+                status = $"Sorry, we're sold out of that.";
+            }
+        }
+        finally
+        {
+            processing = false;
+            cts?.Dispose();
+            cts = null;
+        }
+    }
+
+    public void Dispose()
+    {
+        cts?.Dispose();
     }
 }

@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorDaprDemo.Components.Favorites
+@using BlazorDaprDemo.Components.Shared
+@inherits LayoutComponentBase
 
 <PageTitle>BlazorDaprDemo</PageTitle>
 
@@ -8,7 +10,9 @@
     </div>
 
     <main>
+        
         <div class="top-row px-4">
+            <Favorites />
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 

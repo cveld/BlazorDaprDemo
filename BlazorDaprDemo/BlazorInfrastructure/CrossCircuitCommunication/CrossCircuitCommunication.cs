@@ -1,4 +1,10 @@
-﻿using BlazorInfrastructure.ConnectedAppServiceInstances;
+﻿/*
+ * This file is taken from a Blazor demo I did for NEXT.NET back in 2019
+ * It enables cross circuit communication through a SignalR backplane
+ * See: https://github.com/cveld/blazor-experiments
+*/
+
+using BlazorInfrastructure.ConnectedAppServiceInstances;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -9,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace BlazorInfrastructure.CrossCircuitCommunication
 {
-    public class CrossCircuitCommunication
+    public class CrossCircuitCommunication: ICrossCircuitCommunication
     {
         public CrossCircuitCommunication(SignalRClient signalRClient, SignalRServer signalRServer)
         {

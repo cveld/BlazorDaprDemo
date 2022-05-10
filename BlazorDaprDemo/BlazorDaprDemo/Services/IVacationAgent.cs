@@ -1,9 +1,9 @@
-﻿using VacationModels;
+﻿using BlazorDaprDemo.Entities;
 
 namespace BlazorDaprDemo.Services
 {
     public interface IVacationAgent
     {
-        public Task<Vacation[]?> GetVacationsAsync();
+        public Task<VacationModel[]?> GetVacationsAsync();
     }
 }

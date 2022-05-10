@@ -1,5 +1,8 @@
+using BlazorDaprDemo.Entities;
+using Dapr.Client;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using VacationModels;
+using VacationAPI.Const;
 
 Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
@@ -10,8 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddDbContext<VacationContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("VacationDatabase")));
 var app = builder.Build();
+
+CreateDbIfNotExists(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -39,21 +45,36 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.MapGet("/vacations", () =>
+app.MapGet("/vacations", async (VacationContext dbContext) =>
 {
-    var vacations =
-    new List<Vacation>
-    {
-        new Vacation
-        {
-            Name = "Vacation 1"
-        }
-    };
-    return vacations;
+    //var state = await client.GetStateAsync<Vacation>(Dependencies.DaprStore, "test");
+    
+    
+    return dbContext.Vacations;
 });
 //.WithName("GetWeatherForecast");
 
 app.Run();
+
+
+static void CreateDbIfNotExists(IHost host)
+{
+    using (var scope = host.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        try
+        {
+            var context = services.GetRequiredService<VacationContext>();
+            VacationsDbInitializer.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred creating the DB.");
+        }
+    }
+}
 
 internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
 {

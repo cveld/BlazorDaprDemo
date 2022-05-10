@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using VacationModels;
+﻿using BlazorDaprDemo.Entities;
+using System.Text.Json;
 
 namespace BlazorDaprDemo.Services
 {
@@ -18,13 +18,13 @@ namespace BlazorDaprDemo.Services
             this.client = client;
         }
 
-        public async Task<Vacation[]?> GetVacationsAsync()
+        public async Task<VacationModel[]?> GetVacationsAsync()
         {
             var responseMessage = await this.client.GetAsync("/vacations");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var stream = await responseMessage.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<Vacation[]>(stream, options);
+                return await JsonSerializer.DeserializeAsync<VacationModel[]>(stream, options);
             }
 
             throw new Exception("Vacations could not be retrieved");

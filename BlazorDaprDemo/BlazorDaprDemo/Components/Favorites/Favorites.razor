@@ -1,0 +1,49 @@
+﻿@using BlazorDaprDemo.Services
+@using System.Security.Claims
+@using BlazorDaprDemo.State
+@using Dapr.Client
+@using FavoritesAPI.Models
+@implements IDisposable
+@inject FavoritesState favoritesState
+@inject AuthenticationStateProvider authenticationStateProvider
+@attribute [Authorize]
+@inject DaprClient daprClient
+Favorites: @favoritesState.favorites.Count
+<button @onclick="OrderClicked">Order</button>
+
+@code {
+    ClaimsPrincipal user;
+    string _authMessage;
+
+    async Task OrderClicked()
+    {
+        await daprClient.PublishEventAsync("pubsub", "order", "body");
+    }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        favoritesState.OnChange += StateHasChanged;
+
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} is authenticated.";
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated.";
+        }
+
+        //user = (await authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.Name;
+        await favoritesState.GetFavorites(user?.Identity.Name);
+    }
+
+    public void Dispose()
+    {
+        favoritesState.OnChange -= StateHasChanged;
+    }
+}
