@@ -18,8 +18,7 @@ using System.Text.Json;
 Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
 var builder = WebApplication.CreateBuilder(args);
-//https://andrewlock.net/5-ways-to-set-the-urls-for-an-aspnetcore-app/
-//builder.WebHost.UseUrls("http://localhost:5000");
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

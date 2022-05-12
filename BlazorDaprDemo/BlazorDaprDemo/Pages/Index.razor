@@ -14,39 +14,5 @@
 
 <VacationList />
 
-<p>
-<button class="btn btn-primary" @onclick="GetVacationData">Get vacation data</button>
-</p>
 
-@if(error != null)
-{
-    <p style="color:red">@error</p>
-}
 
-@if(vacations != null)
-{
-    <table>
-        <thead><tr><th>Name</th></tr></thead>
-        <tbody>
-            @foreach (var vacation in vacations) {
-                <tr><td>@vacation.Title</td></tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    IEnumerable<VacationModel>? vacations = null;
-    string error;
-    async Task GetVacationData()
-    {
-        error = String.Empty;
-        try
-        {
-            vacations = await vacationAgent.GetVacationsAsync();
-        } catch (Exception e)
-        {
-            error = e.Message;
-        }
-    }
-}

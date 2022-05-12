@@ -6,21 +6,25 @@
 #
 name: blazordaprdemo
 extensions:
-- name: dapr
-  config: appconfig
+- name: dapr  
 registry: daprdemoacr.azurecr.io
 services:
 - name: blazordaprdemo
   project: BlazorDaprDemo/BlazorDaprDemo.csproj
   env:
-  - DAPRDEMOENVIRONMENT
+  - DAPRDEMOENVIRONMENT=tyelocal
   bindings:
   - port: 5000
-    name: http
-  - port: 5001
-    protocol: https
-    name: https
+    name: http  
 - name: vacationapi
   project: VacationAPI/VacationAPI.csproj
   bindings:
   - port: 5100
+- name: favoritesapi
+  project: FavoritesAPI/FavoritesAPI.csproj
+  bindings:
+  - port: 5200
+- name: orderapi
+  project: OrderAPI/OrderAPI.csproj
+  bindings:
+  - port: 5300

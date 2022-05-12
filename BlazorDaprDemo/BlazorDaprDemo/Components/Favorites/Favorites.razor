@@ -9,7 +9,7 @@
 @attribute [Authorize]
 @inject DaprClient daprClient
 Favorites: @favoritesState.favorites.Count
-<button @onclick="OrderClicked">Order</button>
+
 
 @code {
     ClaimsPrincipal user;
