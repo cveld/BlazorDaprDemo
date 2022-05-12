@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu @bind-CollapseNavMenu="collapseNavMenu" />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <LoginDisplay />
+        <a href="https://docs.microsoft.com/en-us/aspnet/" target="_blank">About</a>
+    </div>
+
+    <div class="content px-4 @NavMenuCssClass">
+        @Body
+    </div>
+</div>
+
+@code {
+    bool collapseNavMenu = true;
+    // Hack for the Mapbox map - if NavMenu is not collapsed; collapse the body content:
+    string NavMenuCssClass => !collapseNavMenu ? "hide" : null;    
+}

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e74c07fb-1ff0-4d8e-b968-924c35bb5e5c</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\styles.css" />
+  </ItemGroup>
+
+  <ItemGroup>    
+    <PackageReference Include="BuildWebCompiler2022" Version="1.14.7" />    
+    <PackageReference Include="Dapr.AspNetCore" Version="1.7.0" />
+    <PackageReference Include="MatBlazor" Version="2.8.0" />    
+    <PackageReference Include="Microsoft.Tye.Extensions.Configuration" Version="0.10.0-alpha.21420.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorDaprDemo.Entities\BlazorDaprDemo.Entities.csproj" />
+    <ProjectReference Include="..\BlazorDaprDemo.FakeUser\BlazorDaprDemo.FakeUser.csproj" />
+    <ProjectReference Include="..\BlazorInfrastructure\BlazorInfrastructure.csproj" />
+    <ProjectReference Include="..\FavoritesModels\FavoritesModels.csproj" />
+    <ProjectReference Include="..\OrderModels\OrderModels.csproj" />
+  </ItemGroup>
+
+</Project>

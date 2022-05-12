@@ -1,0 +1,18 @@
+﻿@page "/"
+@using System.Text.Json
+@using BlazorDaprDemo.Components.VacationList
+@using BlazorDaprDemo.Entities
+@using BlazorDaprDemo.Services
+@inject IVacationAgent vacationAgent
+@inject IConfiguration configuration
+<PageTitle>Book your vacation</PageTitle>
+@attribute [Authorize]
+
+<p>
+    Environment: @((MarkupString)(configuration["DAPRDEMOENVIRONMENT"] ?? "<i>Not specified</i>"))
+</p>
+
+<VacationList />
+
+
+

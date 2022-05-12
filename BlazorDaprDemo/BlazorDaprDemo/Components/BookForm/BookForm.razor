@@ -1,0 +1,86 @@
+﻿@inject IMatDialogService matDialogService
+@using BlazorDaprDemo.Entities
+@using BlazorDaprDemo.Models
+@using BlazorServerSide.Models
+
+<MatDialogTitle>Book vacation</MatDialogTitle>
+<MatDialogContent>
+<h3>You would like to book @VacationModel.Title</h3>
+
+
+<EditForm Model="bookVacationFormModel" OnValidSubmit="SubmitForm">
+    <DataAnnotationsValidator />
+    @* The following control is a dummy control to prevent default selection of the first control
+        in a Material Design modal dialog *@
+    <MatTextField Style="height: 0" @bind-Value="PreventDefaultControl"></MatTextField>
+    <div class="form-group">
+        <MatDatePicker Class="col-md-6 col-sm-12" Label="Booking date" @bind-Value="bookVacationFormModel.BookingDate"></MatDatePicker>
+        <ValidationMessage For="() => bookVacationFormModel.BookingDate" />
+    </div>
+    <div class="form-group">
+        <MatTextField Class="col-sm-12" Label="E-mail address" @bind-Value="bookVacationFormModel.EmailAddress"></MatTextField>
+        <ValidationMessage For="() => bookVacationFormModel.EmailAddress" />
+    </div>
+    <div class="form-group form-row">
+        <div class="form-col-md-4">
+            <MatSelect Label="Phone prefix" Enhanced="true" @bind-Value="bookVacationFormModel.PhoneNumberPrefix">
+                @foreach (var prefix in PhoneNumberPrefixModel.PhoneNumberPrefixList())
+                {
+                    <MatOption Value="@prefix.ID">@prefix.Display</MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="form-col-md-8">
+            <MatTextField Label="Phone number" @bind-Value="bookVacationFormModel.PhoneNumber"></MatTextField>
+        </div>
+        <div class="form-col-md-12">
+            <ValidationMessage For="() => bookVacationFormModel.PhoneNumberPrefix" />
+            <ValidationMessage For="() => bookVacationFormModel.PhoneNumber" />
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button class="btn btn-secondary" @onclick="@SubmitForm">Debug</button>
+        <button @onclick="@Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+</EditForm>
+</MatDialogContent>
+<MatDialogActions>
+    
+</MatDialogActions>
+
+@code {
+    [Parameter]
+    public VacationModel VacationModel { get; set; }
+    string PreventDefaultControl { get; set; }
+
+    BookVacationFormModel bookVacationFormModel = new BookVacationFormModel
+    {
+        PhoneNumberPrefix = PhoneNumberPrefixModel.PREFIXNETHERLANDS
+    };
+
+
+    [CascadingParameter]
+    public MatDialogReference DialogReference { get; set; }
+
+    
+
+    protected override void OnInitialized()
+    {        
+    }
+
+    protected void SubmitForm()
+    {
+        var bookedEventModel = new BookedEventModel
+        {
+            VacationID = VacationModel.ID,
+            BookVacationFormModel = bookVacationFormModel
+        };
+        DialogReference.Close(new DialogResult<BookedEventModel> { Result = ModalResult.Ok, Data = bookedEventModel });
+    }
+
+    protected void Cancel(MouseEventArgs mouseEventArgs)
+    {
+        DialogReference.Close(new DialogResult<object> { Result = ModalResult.Cancel });
+    }
+}

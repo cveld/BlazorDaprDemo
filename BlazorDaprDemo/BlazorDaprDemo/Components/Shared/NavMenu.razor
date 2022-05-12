@@ -1,0 +1,51 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Vacation Planner</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <AuthorizeView>
+            <Authorized>
+                <li class="small-form-factor nav-item px-3" style="color: #d7d7d7">
+                    Hello, @context.User.Identity.Name!
+                </li>
+            </Authorized>
+        </AuthorizeView>
+        <li class="nav-item px-3">
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-link" href="AzureAD/Account/SignOut">
+                        <span class="oi oi-person" aria-hidden="true"></span> Log out
+                    </NavLink>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="AzureAD/Account/SignIn">
+                        <span class="oi oi-person" aria-hidden="true"></span> Log in
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>        
+        <!-- https://aalmiray.github.io/ikonli/cheat-sheet-openiconic.html -->
+    </ul>
+</div>
+
+@code {
+    [Parameter] public EventCallback<bool> CollapseNavMenuChanged { get; set; }
+    [Parameter] public bool CollapseNavMenu { get; set; }  = true;
+
+    string NavMenuCssClass => CollapseNavMenu ? "collapse" : null;
+
+    async void ToggleNavMenu()
+    {
+        CollapseNavMenu = !CollapseNavMenu;
+        await CollapseNavMenuChanged.InvokeAsync(CollapseNavMenu);
+    }
+}

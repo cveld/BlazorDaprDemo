@@ -1,0 +1,23 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["BlazorDaprDemo/BlazorDaprDemo.csproj", "BlazorDaprDemo/"]
+COPY ["VacationModels/VacationModels.csproj", "VacationModels/"]
+RUN dotnet restore "BlazorDaprDemo/BlazorDaprDemo.csproj"
+COPY . .
+WORKDIR "/src/BlazorDaprDemo"
+RUN dotnet build "BlazorDaprDemo.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "BlazorDaprDemo.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "BlazorDaprDemo.dll"]

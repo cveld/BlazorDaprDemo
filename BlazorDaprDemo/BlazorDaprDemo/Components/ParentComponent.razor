@@ -1,0 +1,15 @@
+﻿<h1>@Title</h1>
+
+<ChildComponent @bind-ParentsTitle="Title" />
+
+<button @onclick="UpdateTitle">Update Title</button>
+
+@code {
+    private string Title { get; set; } = "Hello, World!";
+
+    private void UpdateTitle()
+    {
+        Title = "Hello, Blazor!";
+    }
+}
+

@@ -1,0 +1,19 @@
+﻿.stars {
+    display: flex;
+    height: 20px;
+
+    svg {
+        height: 100%;
+        stroke: #bd9e08;
+        fill: none;
+        cursor: pointer;
+
+        &.is-active {
+            fill: #bd9e08;
+        }
+
+        &:active {
+            transform: scale(1.2);
+        }
+    }
+}

@@ -1,0 +1,40 @@
+﻿@import "mixins.scss";
+@import "../Components/VacationList/VacationList.scss";
+@import "../Components/Vacation/Vacation.scss";
+@import "../Components/Rating/Rating.scss";
+@import "../Components/Stars/Stars.scss";
+@import "../Components/Like/Like.scss";
+@import "hacks.scss";
+
+
+map-pin {
+    display: none
+}
+
+.pin-map {
+    position: absolute !important;
+    top: 56px;
+    bottom: 0;
+    right: 0;
+}
+
+@media (max-width: 767.98px) {
+    div.content.hide {
+        display: none
+    }
+    .pin-map {
+        left: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .pin-map {
+        left: 250px;
+    }
+}
+
+
+.pin-map-parent {
+    height: 100vh;
+}
+

@@ -1,0 +1,37 @@
+﻿@using BlazorServerSide.Data
+@using BlazorServerSide.Models
+@using BlazorDaprDemo.Components.Vacation
+
+<div class="vacationlist">
+    <div class="wrapper-overview">
+        <ol class="overview">
+            @foreach (var vacationkeyvaluepair in vacations)
+            {
+                var vacation = vacationkeyvaluepair.Value;
+                var liked = VacationLiked(vacation);
+                var classes = new List<string>();
+                if (focusIndex == -1 || focusIndex == vacation.ID)
+                {
+                    classes.Add("is-active");
+                }
+                if (focusIndex == vacation.ID)
+                {
+                    classes.Add("is-special");
+                }
+
+                <li class="@string.Join(" ", classes)" @onmouseenter="() => onAction(vacation.ID)" @onmouseleave="() => onAction(-1)">                    
+                    <Vacation @key="vacation.ID" Vacation="@vacation" Liked="liked" OnLikeClicked="() => OnFavoriteClicked(vacation)" OnBooked="(item) => OnBookedAsync(item)" />
+                </li>
+            }
+        </ol>
+    </div>
+</div>
+
+@code {
+    int focusIndex = -1;
+
+    void onAction(int index)
+    {
+        this.focusIndex = index;
+    }
+}

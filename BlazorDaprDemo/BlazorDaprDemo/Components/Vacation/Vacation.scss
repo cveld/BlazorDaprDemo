@@ -1,0 +1,83 @@
+﻿.vacation {
+    display: flex;
+    padding: 15px;
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+    user-select: none;
+    min-width: 215px;
+
+    .card {
+        box-shadow: 0 1px 6px 0 rgba(0,0,0,.1), 0 1px 9px 0 rgba(0,0,0,.02);
+        width: 100%;
+
+        > header {
+            @include aspect-ratio(16, 8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header.mouse-pointer {
+            cursor: pointer;            
+        }
+
+        header.booked {
+            cursor: default;
+        }
+
+        .content {
+            padding-top: 0
+        }
+    }
+
+    .card-body {
+        position: relative;
+        // padding-bottom: 30px;
+        .rating {
+            position: absolute;
+            right: 0;
+            top: 0;
+            transform: translate(-25%, -75%);
+        }
+
+        .stars {
+            position: absolute;
+            left: 15px;
+            bottom: 5px;
+        }
+    }
+
+    footer {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+
+        .price-unit {
+            font-size: 16px;
+            color: #838b99;
+        }
+
+        .wrapper-price {
+            align-items: center;
+            display: inline-flex;
+
+            span + span {
+                padding-left: 5px;
+            }
+        }
+
+        .price-orig {
+            position: relative;
+            top: 0;
+            font-size: 11px;
+            color: #838b99;
+            text-decoration: line-through;
+        }
+
+        .price {
+            font-size: 20px;
+            color: #565f73;
+            font-weight: 600;
+        }
+    }
+    /* footer */
+} /* vacation */
