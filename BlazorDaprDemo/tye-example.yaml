@@ -6,8 +6,7 @@
 #
 name: blazordaprdemo
 extensions:
-- name: dapr  
-registry: daprdemoacr.azurecr.io
+- name: dapr
 services:
 - name: blazordaprdemo
   project: BlazorDaprDemo/BlazorDaprDemo.csproj
