@@ -6,9 +6,11 @@ Get started by visiting https://dapr.io/
 At TEQnation 2022 I did a talk about building microservices with Dapr and .NET.
 In this repo you will find the demo app code. 
 The slidedeck can also be found in this repo:
-[2022-05 TEQnation - Building Microservices with Dapr and .NET - Carl in 't Veld.pptx]
 
-If you have any questions or feedback, don't hesitate to reach out to me through any channels or raise a ticket in this very repo.
+[2022-05 TEQnation - Building Microservices with Dapr and .NET - Carl in 't Veld.pptx](./2022-05%20TEQnation%20-%20Building%20Microservices%20with%20Dapr%20and%20.NET%20-%20Carl%20in%20't%20Veld.pptx)
+
+
+If you have any questions or feedback, don't hesitate to reach out to me through any channel or raise a ticket in this very repo.
 
 # Architecture
 The demo app is utilizing the following patterns:
