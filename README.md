@@ -18,3 +18,6 @@ The demo app is utilizing the following patterns:
    * State Management. Dapr helps you storing simple key value date into a store of choice
    * Pubsub. Dapr helps you wiring up a pubsub infrastructure of choice
    
+# Running the demo
+You can leverage Project Tye:
+`tye run tye-example.yaml`
